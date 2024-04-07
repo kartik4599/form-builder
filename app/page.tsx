@@ -1,113 +1,199 @@
-import Image from "next/image";
+import { getForm, getFormStats } from "@/actions/form";
+import { LuView } from "react-icons/lu";
+import { HiCursorClick } from "react-icons/hi";
+import { BiRightArrowAlt } from "react-icons/bi";
+import { TbArrowBounce } from "react-icons/tb";
+import { FaWpforms, FaEdit } from "react-icons/fa";
+import React, { Suspense } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
+import CreateFormBtn from "@/components/CreateFormBtn";
+import { Form } from "@prisma/client";
+import { Badge } from "@/components/ui/badge";
+import { formatDistance } from "date-fns";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
-export default function Home() {
+interface StatsCardsProps {
+  data?: Awaited<ReturnType<typeof getFormStats>>;
+  loading: boolean;
+}
+
+interface StatsCardProps {
+  title: string;
+  icon: React.ReactNode;
+  helperText: string;
+  value: number;
+  loading: boolean;
+  className: string;
+}
+
+const page = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+    <div className="container pt-4">
+      <Suspense fallback={<StatsCards loading={true} />}>
+        <CardStatWrapper />
+      </Suspense>
+      <Separator className="my-6" />
+      <h2 className="text-3xl font-bold col-span-2">My Forms</h2>
+      <Separator className="my-6" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <CreateFormBtn />
+        <Suspense
+          fallback={[1, 2].map((i) => (
+            <FormCardSkeleton key={i} />
+          ))}>
+          <FormCards />
+        </Suspense>
       </div>
+    </div>
+  );
+};
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+async function CardStatWrapper() {
+  const stats = await getFormStats();
+  return <StatsCards loading={false} data={stats} />;
+}
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+function StatsCards({ data, loading }: StatsCardsProps) {
+  return (
+    <div className="w-full pt-8 gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+      <StatCard
+        title="Total Forms"
+        icon={<LuView className="text-blue-600" />}
+        helperText={"All time form visits"}
+        value={data?.visits || 0}
+        loading={loading}
+        className={"shadow-md shadow-blue-600"}
+      />
+      <StatCard
+        title="Total submissions"
+        icon={<FaWpforms className="text-yellow-600" />}
+        helperText={"All time form submissions"}
+        value={data?.submissions || 0}
+        loading={loading}
+        className={"shadow-md shadow-yellow-600"}
+      />
+      <StatCard
+        title="Submission rate"
+        icon={<HiCursorClick className="text-green-600" />}
+        helperText={"Visits that result in form submissions"}
+        value={data?.submissionRate || 0}
+        loading={loading}
+        className={"shadow-md shadow-green-600"}
+      />
+      <StatCard
+        title="Bounce rate"
+        icon={<TbArrowBounce className="text-red-600" />}
+        helperText={"All time leave without interaction"}
+        value={data?.bounceRate || 0}
+        loading={loading}
+        className={"shadow-md shadow-red-600"}
+      />
+    </div>
   );
 }
+
+function StatCard({
+  title,
+  icon,
+  helperText,
+  value,
+  loading,
+  className,
+}: StatsCardProps) {
+  return (
+    <Card className={className}>
+      <CardHeader>
+        <CardTitle className="text-sm font-medium text-muted-foreground">
+          {title}
+        </CardTitle>
+        {icon}
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">
+          {loading ? (
+            <Skeleton>
+              <span className="opacity-0">0</span>
+            </Skeleton>
+          ) : (
+            value
+          )}
+          <p className="text-xs text-muted-foreground pt-1">{helperText} </p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function FormCardSkeleton() {
+  return <Skeleton className="border-2 border-primary-/20 h-[190px] w-full" />;
+}
+
+async function FormCards() {
+  const forms = await getForm();
+
+  return (
+    <>
+      {forms.map((form) => (
+        <FormCard form={form} key={form.id} />
+      ))}
+    </>
+  );
+}
+
+function FormCard({ form }: { form: Form }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex item-center gap-2 justify-between">
+          <span className="truncate font-bold">{form.name}</span>
+          {form.publish ? (
+            <Badge>Published</Badge>
+          ) : (
+            <Badge variant={"destructive"}>Draft</Badge>
+          )}
+        </CardTitle>
+        <CardDescription className="flex items-center justify-between text-muted-foreground text-sm">
+          {formatDistance(form.createdAt, new Date(), { addSuffix: true })}
+          {form.publish && (
+            <span className="flex items-center gap-2">
+              <LuView className="text-muted-foreground" />
+              <span>{form.visits}</span>
+              <FaWpforms className="text-muted-foreground" />
+              <span>{form.submission}</span>
+            </span>
+          )}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="h-[20px] truncate text-sm text-muted-foreground">
+        {form.description || "No description"}
+      </CardContent>
+      <CardFooter>
+        {form.publish ? (
+          <Button asChild className="w-full mt-2 text-md gap-4">
+            <Link href={`/form/${form.id}`}>
+              View submission <BiRightArrowAlt />
+            </Link>
+          </Button>
+        ) : (
+          <Button asChild variant={"secondary"} className="w-full mt-2 text-md gap-4">
+            <Link href={`/builder/${form.id}`}>
+              Edit form <FaEdit />
+            </Link>
+          </Button>
+        )}
+      </CardFooter>
+    </Card>
+  );
+}
+
+export default page;
