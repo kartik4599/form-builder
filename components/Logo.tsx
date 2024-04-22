@@ -6,7 +6,10 @@ const Logo = () => {
     <Link
       href="/"
       className="font-bold text-3xl bg-gradient-to-r from-indigo-400  to-cyan-400 text-transparent bg-clip-text hover:cursor-pointer">
-      @Form
+      <span className="bg-gradient-to-r from-red-400  to-yellow-400 text-transparent bg-clip-text">
+        form
+      </span>
+      ation
     </Link>
   );
 };

@@ -1,14 +1,15 @@
 "use client";
-
 import { createContext, Dispatch, SetStateAction, useState } from "react";
 import { FormElementInstance } from "../FormElements";
 
 type DesignerContextType = {
   elements: FormElementInstance[];
-  addElement: (index: number, element: FormElementInstance) => void;
-  removeElement: (id: string) => void;
   selectedElement: FormElementInstance | null;
   setSelectedElement: Dispatch<SetStateAction<FormElementInstance | null>>;
+  addElement: (index: number, element: FormElementInstance) => void;
+  removeElement: (id: string) => void;
+  updateChanges: (id: string, element: FormElementInstance) => void;
+  setElements: Dispatch<SetStateAction<FormElementInstance[]>>;
 };
 
 export const DesignerContext = createContext<DesignerContextType | null>(null);
@@ -36,6 +37,19 @@ const DesignerContextProvider = ({
     });
   };
 
+  const updateChanges = (elementId: string, element: FormElementInstance) => {
+    setElements((prevElements) => {
+      const index = prevElements.findIndex(
+        (element) => element.id === elementId
+      );
+      if (index !== -1) {
+        prevElements[index] = element;
+      }
+      return prevElements;
+    });
+    setSelectedElement(element);
+  };
+
   return (
     <DesignerContext.Provider
       value={{
@@ -44,6 +58,8 @@ const DesignerContextProvider = ({
         removeElement,
         selectedElement,
         setSelectedElement,
+        updateChanges,
+        setElements,
       }}>
       {children}
     </DesignerContext.Provider>

@@ -13,12 +13,13 @@ import { Button } from "./ui/button";
 import { BiSolidTrash } from "react-icons/bi";
 
 const Designer = () => {
-  const { addElement, elements, setSelectedElement } = useDesigner();
-
+  const { addElement, elements, setSelectedElement, removeElement } =
+    useDesigner();
   const droppable = useDroppable({
     id: "designer-drop=area",
     data: {
       isDesignerDropArea: true,
+      index: elements.length,
     },
   });
 
@@ -26,11 +27,18 @@ const Designer = () => {
     onDragEnd: ({ active, over }) => {
       if (!active || !over) return;
 
-      const isDesignerBtnElement = active.data?.current?.isDesignerBtnElement;
-      if (isDesignerBtnElement) {
+      const dropedIndex = over.data?.current?.index;
+      if (active.data?.current?.isDesignerBtnElement) {
         const type = active.data?.current?.type as ElementsType;
         const newElement = FormElements[type].construct(idgenerator());
-        addElement(0, newElement);
+        return addElement(dropedIndex, newElement);
+      }
+      const draggedIndex = active.data?.current?.index;
+
+      if (active.data?.current?.isDesignerElement && draggedIndex) {
+        const data = { ...elements[draggedIndex] };
+        removeElement(data.id);
+        return addElement(dropedIndex, data);
       }
     },
   });
@@ -42,7 +50,7 @@ const Designer = () => {
           ref={droppable.setNodeRef}
           className={cn(
             "bg-background max-w-[920px] h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1 overflow-y-auto",
-            droppable.isOver && "right-2 ring-primary/20"
+            droppable.isOver && "ring-2 ring-primary/80 ring-inset"
           )}>
           {droppable.isOver
             ? !elements.length && (
@@ -57,9 +65,13 @@ const Designer = () => {
               )}
           {elements.length > 0 && (
             <div className="flex flex-col w-full gap-2 p-4">
-              {elements.map((element) => (
+              {elements.map((element, index) => (
                 <div>
-                  <DesignerElementWrapper key={element.id} element={element} />
+                  <DesignerElementWrapper
+                    key={element.id}
+                    element={element}
+                    index={index}
+                  />
                 </div>
               ))}
             </div>
@@ -73,8 +85,10 @@ const Designer = () => {
 
 const DesignerElementWrapper = ({
   element,
+  index,
 }: {
   element: FormElementInstance;
+  index: number;
 }) => {
   const [mouseHover, setMouseHover] = useState(false);
   const { removeElement, setSelectedElement } = useDesigner();
@@ -85,6 +99,7 @@ const DesignerElementWrapper = ({
       type: element.type,
       elementId: element.id,
       isTopHalfDesignerElement: true,
+      index: index,
     },
   });
 
@@ -94,6 +109,7 @@ const DesignerElementWrapper = ({
       type: element.type,
       elementId: element.id,
       isTopHalfDesignerElement: true,
+      index: index + 1,
     },
   });
 
@@ -103,6 +119,7 @@ const DesignerElementWrapper = ({
       elementId: element.id,
       type: element.type,
       isDesignerElement: true,
+      index,
     },
   });
 
