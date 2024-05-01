@@ -91,3 +91,11 @@ export async function publishFormById(id: number) {
     data: { publish: true },
   });
 }
+
+export async function getFormByUrl(url: string) {
+  return await prisma.form.update({
+    where: { shareUrl: url },
+    data: { visits: { increment: 1 } },
+    select: { content: true },
+  });
+}

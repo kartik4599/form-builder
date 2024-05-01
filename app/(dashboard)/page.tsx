@@ -32,8 +32,8 @@ interface StatsCardProps {
   icon: React.ReactNode;
   helperText: string;
   value: number;
-  loading: boolean;
   className: string;
+  loading?: boolean;
 }
 
 const page = () => {
@@ -50,7 +50,8 @@ const page = () => {
         <Suspense
           fallback={[1, 2].map((i) => (
             <FormCardSkeleton key={i} />
-          ))}>
+          ))}
+        >
           <FormCards />
         </Suspense>
       </div>
@@ -102,7 +103,7 @@ function StatsCards({ data, loading }: StatsCardsProps) {
   );
 }
 
-function StatCard({
+export function StatCard({
   title,
   icon,
   helperText,
@@ -180,12 +181,16 @@ function FormCard({ form }: { form: Form }) {
       <CardFooter>
         {form.publish ? (
           <Button asChild className="w-full mt-2 text-md gap-4">
-            <Link href={`/form/${form.id}`}>
+            <Link href={`/forms/${form.id}`}>
               View submission <BiRightArrowAlt />
             </Link>
           </Button>
         ) : (
-          <Button asChild variant={"secondary"} className="w-full mt-2 text-md gap-4">
+          <Button
+            asChild
+            variant={"secondary"}
+            className="w-full mt-2 text-md gap-4"
+          >
             <Link href={`/builder/${form.id}`}>
               Edit form <FaEdit />
             </Link>

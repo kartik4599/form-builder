@@ -1,0 +1,11 @@
+import { ImSpinner2 } from "react-icons/im";
+
+const loading = () => {
+  return (
+    <div className="flex items-center justify-center w-full">
+      <ImSpinner2 className="animate-spin h-12 w-12" />
+    </div>
+  );
+};
+
+export default loading;

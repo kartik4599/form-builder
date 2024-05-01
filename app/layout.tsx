@@ -1,12 +1,11 @@
 import DesignerContextProvider from "@/components/context/DesignerContext";
-import Logo from "@/components/Logo";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
 import { Toaster } from "@/components/ui/toaster";
-import { ClerkProvider, UserButton } from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import TopLoader from "nextjs-toploader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,19 +23,14 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
+          <TopLoader />
           <DesignerContextProvider>
             <ThemeProvider
               enableSystem
               disableTransitionOnChange
               attribute="class"
-              defaultTheme="system">
-              <nav className="flex justify-between items-center border-b border-border h-[60px] px-4 py-2">
-                <Logo />
-                <div className="flex items-center gap-4">
-                  <ThemeSwitcher />
-                  <UserButton afterSignOutUrl="/sign-in" />
-                </div>
-              </nav>
+              defaultTheme="system"
+            >
               {children}
               <Toaster />
             </ThemeProvider>

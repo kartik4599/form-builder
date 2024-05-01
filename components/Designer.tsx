@@ -51,7 +51,8 @@ const Designer = () => {
           className={cn(
             "bg-background max-w-[920px] h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1 overflow-y-auto",
             droppable.isOver && "ring-2 ring-primary/80 ring-inset"
-          )}>
+          )}
+        >
           {droppable.isOver
             ? !elements.length && (
                 <div className="p-4 w-full">
@@ -108,7 +109,7 @@ const DesignerElementWrapper = ({
     data: {
       type: element.type,
       elementId: element.id,
-      isTopHalfDesignerElement: true,
+      isBottomHalfDesignerElement: true,
       index: index + 1,
     },
   });
@@ -138,7 +139,8 @@ const DesignerElementWrapper = ({
         e.stopPropagation();
         setSelectedElement(element);
       }}
-      className="relative h-[120px] flex flex-col text-foreground hover:cursor-pointer rounded-md ring-1 ring-accent ring-inset">
+      className="relative h-[120px] flex flex-col text-foreground hover:cursor-pointer rounded-md ring-1 ring-accent ring-inset"
+    >
       <div
         ref={topHalf.setNodeRef}
         className="absolute w-full h-1/2 rounded-t-md top-0"
@@ -156,7 +158,8 @@ const DesignerElementWrapper = ({
                 e.stopPropagation();
                 removeElement(element.id);
               }}
-              className="flex justify-center h-full border rounded-md rounded-l-none bg-red-500">
+              className="flex justify-center h-full border rounded-md rounded-l-none bg-red-500"
+            >
               <BiSolidTrash className="h-6 w-6" />
             </Button>
           </div>
@@ -177,7 +180,8 @@ const DesignerElementWrapper = ({
         className={cn(
           "flex w-full h-[120px] items-center justify-center rounded-md bg-accent/40 px-4 py-2 pointer-events-none",
           mouseHover && "opacity-10"
-        )}>
+        )}
+      >
         <DesignerComponent elmentInstance={element} />
       </div>
     </div>
