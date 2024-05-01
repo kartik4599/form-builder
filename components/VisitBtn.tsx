@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
 const VisitBtn = ({ shareUrl }: { shareUrl: string }) => {
   const [mounted, setMounted] = useState(false);
@@ -13,13 +14,10 @@ const VisitBtn = ({ shareUrl }: { shareUrl: string }) => {
   const shareLink = `${window.location.origin}/submit/${shareUrl}`;
 
   return (
-    <Button
-      className="w-[200px]"
-      onClick={() => {
-        window.open(shareLink, "_blank");
-      }}
-    >
-      Visit
+    <Button className="w-[200px]" asChild>
+      <Link target="_blank" href={shareLink}>
+        Visit
+      </Link>
     </Button>
   );
 };
