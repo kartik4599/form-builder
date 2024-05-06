@@ -46,28 +46,28 @@ const FormDetailPage = async ({ params }: { params: { id: string } }) => {
           title="Total Forms"
           icon={<LuView className="text-blue-600" />}
           helperText={"All time form visits"}
-          value={visits}
+          value={visits.toLocaleString() || ""}
           className={"shadow-md shadow-blue-600"}
         />
         <StatCard
           title="Total submissions"
           icon={<FaWpforms className="text-yellow-600" />}
           helperText={"All time form submissions"}
-          value={submission}
+          value={submission.toLocaleString() || ""}
           className={"shadow-md shadow-yellow-600"}
         />
         <StatCard
           title="Submission rate"
           icon={<HiCursorClick className="text-green-600" />}
           helperText={"Visits that result in form submissions"}
-          value={submissionRate}
+          value={submissionRate.toLocaleString() + "%" || ""}
           className={"shadow-md shadow-green-600"}
         />
         <StatCard
           title="Bounce rate"
           icon={<TbArrowBounce className="text-red-600" />}
           helperText={"All time leave without interaction"}
-          value={bounceRate}
+          value={bounceRate.toLocaleString() + "%" || ""}
           className={"shadow-md shadow-red-600"}
         />
       </div>

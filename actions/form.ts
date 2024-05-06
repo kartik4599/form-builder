@@ -99,3 +99,13 @@ export async function getFormByUrl(url: string) {
     select: { content: true },
   });
 }
+
+export async function updateFormByUrl(url: string, content: string) {
+  return await prisma.form.update({
+    where: { shareUrl: url },
+    data: {
+      submission: { increment: 1 },
+      FormSubmissions: { create: { content } },
+    },
+  });
+}

@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Rethink_Sans } from "next/font/google/index";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MdTextFields } from "react-icons/md";
 import * as z from "zod";
@@ -10,6 +10,7 @@ import {
   ElementsType,
   FormElement,
   FormElementInstance,
+  SubmitFunction,
 } from "../FormElements";
 import useDesigner from "../hooks/useDesigner";
 import {
@@ -24,6 +25,7 @@ import {
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
+import { cn } from "@/lib/utils";
 const type: ElementsType = "TextField";
 type CustomInstance = FormElementInstance & {
   extraAttributes: {
@@ -102,7 +104,8 @@ const propertiesComponent = ({
       <form
         onBlur={form.handleSubmit(applyChanges)}
         onSubmit={(e) => e.preventDefault()}
-        className="space-y-3">
+        className="space-y-3"
+      >
         <FormField
           control={form.control}
           name="label"
@@ -200,21 +203,52 @@ const propertiesComponent = ({
 
 const formComponent = ({
   elmentInstance,
+  submitValue,
+  isInvalid,
+  defaultValues,
 }: {
   elmentInstance: FormElementInstance;
+  submitValue?: SubmitFunction;
+  isInvalid?: boolean;
+  defaultValues?: string;
 }) => {
   const element = elmentInstance as CustomInstance;
   const { label, helperText, required, placeHolder } = element.extraAttributes;
+  const [value, setValue] = useState(defaultValues || "");
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (isInvalid) setError(true);
+    else setError(false);
+  }, [isInvalid]);
 
   return (
     <div className="flex flex-col gap-2 w-full">
-      <Label>
+      <Label className={cn(error && "text-red-500")}>
         {label}
         {required && "*"}
       </Label>
-      <Input placeholder={placeHolder} />
+      <Input
+        className={cn(error && "border-red-500")}
+        placeholder={placeHolder}
+        onChange={({ target: { value } }) => setValue(value)}
+        onBlur={({ target: { value } }) => {
+          if (!submitValue) return;
+          const valid = TextFieldFormElement.validate(elmentInstance, value);
+          setError(!valid);
+          if (!valid) return;
+          submitValue(element.id, value);
+        }}
+        onFocus={() => setError(false)}
+        value={value}
+      />
       {helperText && (
-        <span className="text-muted-foreground text-[0.8rem]">
+        <span
+          className={cn(
+            "text-muted-foreground text-[0.8rem]",
+            error && "text-red-500"
+          )}
+        >
           {helperText}
         </span>
       )}
@@ -241,4 +275,13 @@ export const TextFieldFormElement: FormElement = {
       placeHolder: "Value here...",
     },
   }),
+  validate(FormElement, currentValue) {
+    const {
+      extraAttributes: { required },
+    } = FormElement as CustomInstance;
+    if (required) {
+      return currentValue.length > 0;
+    }
+    return true;
+  },
 };

@@ -31,7 +31,7 @@ interface StatsCardProps {
   title: string;
   icon: React.ReactNode;
   helperText: string;
-  value: number;
+  value: string;
   className: string;
   loading?: boolean;
 }
@@ -71,7 +71,7 @@ function StatsCards({ data, loading }: StatsCardsProps) {
         title="Total Forms"
         icon={<LuView className="text-blue-600" />}
         helperText={"All time form visits"}
-        value={data?.visits || 0}
+        value={data?.visits.toLocaleString() || ""}
         loading={loading}
         className={"shadow-md shadow-blue-600"}
       />
@@ -79,7 +79,7 @@ function StatsCards({ data, loading }: StatsCardsProps) {
         title="Total submissions"
         icon={<FaWpforms className="text-yellow-600" />}
         helperText={"All time form submissions"}
-        value={data?.submissions || 0}
+        value={data?.submissions.toLocaleString() || ""}
         loading={loading}
         className={"shadow-md shadow-yellow-600"}
       />
@@ -87,7 +87,7 @@ function StatsCards({ data, loading }: StatsCardsProps) {
         title="Submission rate"
         icon={<HiCursorClick className="text-green-600" />}
         helperText={"Visits that result in form submissions"}
-        value={data?.submissionRate || 0}
+        value={data?.submissionRate.toLocaleString() + "%" || ""}
         loading={loading}
         className={"shadow-md shadow-green-600"}
       />
@@ -95,7 +95,7 @@ function StatsCards({ data, loading }: StatsCardsProps) {
         title="Bounce rate"
         icon={<TbArrowBounce className="text-red-600" />}
         helperText={"All time leave without interaction"}
-        value={data?.bounceRate || 0}
+        value={data?.bounceRate.toLocaleString() + "%" || ""}
         loading={loading}
         className={"shadow-md shadow-red-600"}
       />
