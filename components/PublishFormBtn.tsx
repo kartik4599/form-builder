@@ -31,7 +31,6 @@ const PublishFormBtn = ({ id }: { id: number }) => {
       router.refresh();
     } catch (e) {
       console.log(e);
-
       toast({
         title: "Error",
         description: "Something went wrong. Please try again later. ",

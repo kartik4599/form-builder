@@ -102,10 +102,20 @@ export async function getFormByUrl(url: string) {
 
 export async function updateFormByUrl(url: string, content: string) {
   return await prisma.form.update({
-    where: { shareUrl: url },
+    where: { shareUrl: url, publish: true },
     data: {
       submission: { increment: 1 },
       FormSubmissions: { create: { content } },
     },
+  });
+}
+
+export async function getFormwithSubmissions(id: number) {
+  const user = await currentUser();
+  if (!user) throw new Error("User not found");
+
+  return await prisma.form.findUnique({
+    where: { id, userId: user.id },
+    include: { FormSubmissions: true },
   });
 }

@@ -81,8 +81,7 @@ const FormBuilder = ({ form }: { form: Form }) => {
                     title: "Copied to clipboard",
                     description: "Share link copied to clipboard",
                   });
-                }}
-              >
+                }}>
                 Copy
               </Button>
             </div>
@@ -102,7 +101,6 @@ const FormBuilder = ({ form }: { form: Form }) => {
             </div>
           </div>
         </div>
-        {/* </Confetti> */}
       </>
     );
   }
