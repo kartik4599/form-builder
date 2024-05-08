@@ -20,9 +20,9 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { LuHeading1 } from "react-icons/lu";
+import { LuHeading2 } from "react-icons/lu";
 
-const type: ElementsType = "TitleField";
+const type: ElementsType = "SubTitleField";
 
 type CustomInstance = FormElementInstance & {
   extraAttributes: {
@@ -46,8 +46,8 @@ const designerComponent = ({
 
   return (
     <div className="flex flex-col gap-2 w-full">
-      <Label className="text-muted-foreground">Title Field</Label>
-      <Label className="text-xl">{title}</Label>
+      <Label className="text-muted-foreground">SubTitle field</Label>
+      <Label className="text-lg">{title}</Label>
     </div>
   );
 };
@@ -88,7 +88,7 @@ const propertiesComponent = ({
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title Filed</FormLabel>
+              <FormLabel>Sub Title Field</FormLabel>
               <FormControl>
                 <Input
                   {...field}
@@ -116,23 +116,23 @@ const formComponent = ({
   const element = elmentInstance as CustomInstance;
   const { title } = element.extraAttributes;
 
-  return <p className="text-xl">{title}</p>;
+  return <p className="text-lg">{title}</p>;
 };
 
-export const TitleFieldFormElement: FormElement = {
+export const SubTitleFieldFormElement: FormElement = {
   type,
   designerComponent,
   propertiesComponent,
   formComponent,
   designerBtnElement: {
-    icon: LuHeading1,
-    label: "Title Field",
+    icon: LuHeading2,
+    label: "SubTitle Field",
   },
   construct: (id: string) => ({
     id,
     type,
     extraAttributes: {
-      title: "Title Field",
+      title: "SubTitle Field",
     },
   }),
   validate: () => true,
