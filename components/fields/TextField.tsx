@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Rethink_Sans } from "next/font/google/index";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MdTextFields } from "react-icons/md";
