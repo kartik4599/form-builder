@@ -20,8 +20,6 @@ import { formatDistance } from "date-fns";
 type Row = { [key: string]: string } & { submittedAt: Date };
 
 const RowCell = ({ type, value }: { value: string; type: ElementsType }) => {
-  // let node: = value
-
   return <TableCell>{value}</TableCell>;
 };
 
