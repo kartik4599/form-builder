@@ -24,19 +24,20 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
 import { cn } from "@/lib/utils";
-import { Textarea } from "../ui/textarea";
-import { BsTextarea, BsTextareaResize } from "react-icons/bs";
-import { Slider } from "../ui/slider";
+import { Button } from "../ui/button";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { BsFillCalendar2DateFill, BsFillCalendarDateFill } from "react-icons/bs";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { format } from "date-fns";
+import { Calendar } from "../ui/calendar";
 
-const type: ElementsType = "TextAreaField";
+const type: ElementsType = "DateField";
 
 type CustomInstance = FormElementInstance & {
   extraAttributes: {
     label: string;
     helperText: string;
     required: boolean;
-    placeHolder: string;
-    rows: number;
   };
 };
 
@@ -46,8 +47,7 @@ const designerComponent = ({
   elmentInstance: FormElementInstance;
 }) => {
   const element = elmentInstance as CustomInstance;
-  const { label, helperText, required, placeHolder, rows } =
-    element.extraAttributes;
+  const { label, helperText, required } = element.extraAttributes;
 
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -55,7 +55,11 @@ const designerComponent = ({
         {label}
         {required && "*"}
       </Label>
-      <Textarea rows={1} readOnly disabled placeholder={placeHolder} />
+      <Button
+        variant={"outline"}
+        className="w-full justify-start text-left font-normal">
+        <CalendarIcon className="mr-2 h-4 w-4" />
+      </Button>
       {helperText && (
         <span className="text-muted-foreground text-[0.8rem]">
           {helperText}
@@ -69,8 +73,6 @@ const propertiesSchema = z.object({
   label: z.string().min(2).max(50),
   helperText: z.string().max(50),
   required: z.boolean().default(false),
-  placeHolder: z.string().max(50),
-  rows: z.number().default(3),
 });
 
 type propertiesSchemaType = z.infer<typeof propertiesSchema>;
@@ -81,8 +83,7 @@ const propertiesComponent = ({
   elmentInstance: FormElementInstance;
 }) => {
   const element = elmentInstance as CustomInstance;
-  const { label, helperText, required, placeHolder, rows } =
-    element.extraAttributes;
+  const { label, helperText, required } = element.extraAttributes;
   const { updateChanges } = useDesigner();
 
   const form = useForm<propertiesSchemaType>({
@@ -91,8 +92,6 @@ const propertiesComponent = ({
       label,
       helperText,
       required,
-      placeHolder,
-      rows,
     },
   });
 
@@ -134,46 +133,6 @@ const propertiesComponent = ({
                 <br />
                 It will be displayed above the field.
               </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="placeHolder"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Placeholder</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.currentTarget.blur();
-                    }
-                  }}
-                />
-              </FormControl>
-              <FormDescription>The placeholder of the field.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="rows"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Rows {form.watch("rows")}</FormLabel>
-              <FormControl>
-                <Slider
-                  step={1}
-                  min={3}
-                  max={10}
-                  value={[field.value]}
-                  onValueChange={(value) => field.onChange(value[0])}
-                />
-              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -239,9 +198,10 @@ const formComponent = ({
   defaultValues?: string;
 }) => {
   const element = elmentInstance as CustomInstance;
-  const { label, helperText, required, placeHolder, rows } =
-    element.extraAttributes;
-  const [value, setValue] = useState(defaultValues || "");
+  const { label, helperText, required } = element.extraAttributes;
+  const [date, setDate] = useState<Date | undefined>(
+    defaultValues ? new Date(defaultValues) : undefined
+  );
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -255,24 +215,35 @@ const formComponent = ({
         {label}
         {required && "*"}
       </Label>
-      <Textarea
-        rows={rows}
-        className={cn(error && "border-red-500")}
-        placeholder={placeHolder}
-        onChange={({ target: { value } }) => setValue(value)}
-        onBlur={({ target: { value } }) => {
-          if (!submitValue) return;
-          const valid = TextAreaFieldFormElement.validate(
-            elmentInstance,
-            value
-          );
-          setError(!valid);
-          if (!valid) return;
-          submitValue(element.id, value);
-        }}
-        onFocus={() => setError(false)}
-        value={value}
-      />
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant={"outline"}
+            className={cn(
+              "w-full justify-start text-left font-normal",
+              !date && "text-muted-foreground",
+              error && "border-red-500"
+            )}>
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {date ? format(date, "PPP") : <span>Pick a date</span>}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            mode="single"
+            selected={date}
+            initialFocus
+            onSelect={(date) => {
+              setDate(date);
+              if (!submitValue) return;
+              const value = date?.toUTCString() || "";
+              const valid = DateFieldFormElement.validate(element, value);
+              setError(!valid);
+              submitValue(element.id, value);
+            }}
+          />
+        </PopoverContent>
+      </Popover>
       {helperText && (
         <span
           className={cn(
@@ -286,28 +257,24 @@ const formComponent = ({
   );
 };
 
-export const TextAreaFieldFormElement: FormElement = {
+export const DateFieldFormElement: FormElement = {
   type,
   designerComponent,
   propertiesComponent,
   formComponent,
   designerBtnElement: {
-    icon: BsTextareaResize,
-    label: "TextArea Field",
+    icon: BsFillCalendar2DateFill,
+    label: "Date Field",
   },
-  construct: (id: string) => {
-    return {
-      id,
-      type,
-      extraAttributes: {
-        label: "TextArea Flield",
-        helperText: "Helper text",
-        required: false,
-        placeHolder: "Value here...",
-        rows: 3,
-      },
-    };
-  },
+  construct: (id: string) => ({
+    id,
+    type,
+    extraAttributes: {
+      label: "Date Field",
+      helperText: "Pick a date",
+      required: false,
+    },
+  }),
   validate(FormElement, currentValue) {
     const {
       extraAttributes: { required },
