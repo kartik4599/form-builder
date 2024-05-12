@@ -15,12 +15,33 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDistance } from "date-fns";
+import { formatDate, formatDistance } from "date-fns";
+import { ReactNode } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type Row = { [key: string]: string } & { submittedAt: Date };
 
 const RowCell = ({ type, value }: { value: string; type: ElementsType }) => {
-  return <TableCell>{value}</TableCell>;
+  let node: ReactNode = value;
+
+  switch (type) {
+    case "DateField": {
+      if (!value) break;
+      const date = new Date(value);
+      node = (
+        <Badge variant={"outline"}>{formatDate(date, "dd/MM/yyyy")} </Badge>
+      );
+      break;
+    }
+    case "CheckBoxField": {
+      const checked = value === "true";
+      node = <Checkbox checked={checked} disabled />;
+      break;
+    }
+  }
+
+  return <TableCell>{node}</TableCell>;
 };
 
 const SubmissionsTable = async ({ id }: { id: number }) => {
@@ -38,14 +59,21 @@ const SubmissionsTable = async ({ id }: { id: number }) => {
 
   formElements.forEach((element) => {
     switch (element.type) {
-      case "TextField": {
+      case "TextField":
+      case "NumberField":
+      case "TextAreaField":
+      case "DateField":
+      case "SelectField":
+      case "CheckBoxField":
         columns.push({
           id: element.id,
           label: element.extraAttributes?.label,
           required: element.extraAttributes?.required,
           type: element.type,
         });
-      }
+        break;
+      default:
+        break;
     }
   });
 
