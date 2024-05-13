@@ -30,7 +30,7 @@ type CustomInstance = FormElementInstance & {
   };
 };
 
-const designerComponent = ({
+const DesignerComponent = ({
   elmentInstance,
 }: {
   elmentInstance: FormElementInstance;
@@ -52,7 +52,7 @@ const propertiesSchema = z.object({
 
 type propertiesSchemaType = z.infer<typeof propertiesSchema>;
 
-const propertiesComponent = ({
+const PropertiesComponent = ({
   elmentInstance,
 }: {
   elmentInstance: FormElementInstance;
@@ -83,8 +83,7 @@ const propertiesComponent = ({
       <form
         onBlur={form.handleSubmit(applyChanges)}
         onSubmit={(e) => e.preventDefault()}
-        className="space-y-3"
-      >
+        className="space-y-3">
         <FormField
           control={form.control}
           name="height"
@@ -113,7 +112,7 @@ const propertiesComponent = ({
   );
 };
 
-const formComponent = ({
+const FormComponent = ({
   elmentInstance,
 }: {
   elmentInstance: FormElementInstance;
@@ -126,9 +125,9 @@ const formComponent = ({
 
 export const SpacerFieldFormElement: FormElement = {
   type,
-  designerComponent,
-  propertiesComponent,
-  formComponent,
+  designerComponent: DesignerComponent,
+  propertiesComponent: PropertiesComponent,
+  formComponent: FormComponent,
   designerBtnElement: {
     icon: LuSeparatorHorizontal,
     label: "Spacer Field",

@@ -37,7 +37,7 @@ type CustomInstance = FormElementInstance & {
   };
 };
 
-const designerComponent = ({
+const DesignerComponent = ({
   elmentInstance,
 }: {
   elmentInstance: FormElementInstance;
@@ -70,7 +70,7 @@ const propertiesSchema = z.object({
 
 type propertiesSchemaType = z.infer<typeof propertiesSchema>;
 
-const propertiesComponent = ({
+const PropertiesComponent = ({
   elmentInstance,
 }: {
   elmentInstance: FormElementInstance;
@@ -201,7 +201,7 @@ const propertiesComponent = ({
   );
 };
 
-const formComponent = ({
+const FormComponent = ({
   elmentInstance,
   submitValue,
   isInvalid,
@@ -258,9 +258,9 @@ const formComponent = ({
 
 export const NumberFieldFormElement: FormElement = {
   type,
-  designerComponent,
-  propertiesComponent,
-  formComponent,
+  designerComponent: DesignerComponent,
+  propertiesComponent: PropertiesComponent,
+  formComponent: FormComponent,
   designerBtnElement: {
     icon: Bs123,
     label: "Number Field",

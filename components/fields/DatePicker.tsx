@@ -26,7 +26,7 @@ import { Switch } from "../ui/switch";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { CalendarIcon } from "@radix-ui/react-icons";
-import { BsFillCalendar2DateFill, BsFillCalendarDateFill } from "react-icons/bs";
+import { BsFillCalendar2DateFill } from "react-icons/bs";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { format } from "date-fns";
 import { Calendar } from "../ui/calendar";
@@ -41,7 +41,7 @@ type CustomInstance = FormElementInstance & {
   };
 };
 
-const designerComponent = ({
+const DesignerComponent = ({
   elmentInstance,
 }: {
   elmentInstance: FormElementInstance;
@@ -77,7 +77,7 @@ const propertiesSchema = z.object({
 
 type propertiesSchemaType = z.infer<typeof propertiesSchema>;
 
-const propertiesComponent = ({
+const PropertiesComponent = ({
   elmentInstance,
 }: {
   elmentInstance: FormElementInstance;
@@ -186,7 +186,7 @@ const propertiesComponent = ({
   );
 };
 
-const formComponent = ({
+const FormComponent = ({
   elmentInstance,
   submitValue,
   isInvalid,
@@ -259,9 +259,9 @@ const formComponent = ({
 
 export const DateFieldFormElement: FormElement = {
   type,
-  designerComponent,
-  propertiesComponent,
-  formComponent,
+  designerComponent: DesignerComponent,
+  propertiesComponent: PropertiesComponent,
+  formComponent: FormComponent,
   designerBtnElement: {
     icon: BsFillCalendar2DateFill,
     label: "Date Field",

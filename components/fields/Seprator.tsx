@@ -7,7 +7,7 @@ import { Separator } from "../ui/separator";
 
 const type: ElementsType = "SepratorField";
 
-const designerComponent = () => {
+const DesignerComponent = () => {
   return (
     <div className="flex flex-col gap-2 w-full">
       <Label className="text-muted-foreground">Seprator Field</Label>
@@ -16,17 +16,17 @@ const designerComponent = () => {
   );
 };
 
-const propertiesComponent = () => {
+const PropertiesComponent = () => {
   return <p>No property for this field</p>;
 };
 
-const formComponent = () => <Separator />;
+const FormComponent = () => <Separator />;
 
 export const SeparatorFieldFormElement: FormElement = {
   type,
-  designerComponent,
-  propertiesComponent,
-  formComponent,
+  designerComponent: DesignerComponent,
+  propertiesComponent: PropertiesComponent,
+  formComponent: FormComponent,
   designerBtnElement: {
     icon: RiSeparator,
     label: "Separator",

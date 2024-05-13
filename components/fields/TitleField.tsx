@@ -36,7 +36,7 @@ const propertiesSchema = z.object({
 
 type propertiesSchemaType = z.infer<typeof propertiesSchema>;
 
-const designerComponent = ({
+const DesignerComponent = ({
   elmentInstance,
 }: {
   elmentInstance: FormElementInstance;
@@ -52,7 +52,7 @@ const designerComponent = ({
   );
 };
 
-const propertiesComponent = ({
+const PropertiesComponent = ({
   elmentInstance,
 }: {
   elmentInstance: FormElementInstance;
@@ -108,7 +108,7 @@ const propertiesComponent = ({
   );
 };
 
-const formComponent = ({
+const FormComponent = ({
   elmentInstance,
 }: {
   elmentInstance: FormElementInstance;
@@ -121,9 +121,9 @@ const formComponent = ({
 
 export const TitleFieldFormElement: FormElement = {
   type,
-  designerComponent,
-  propertiesComponent,
-  formComponent,
+  designerComponent: DesignerComponent,
+  propertiesComponent: PropertiesComponent,
+  formComponent: FormComponent,
   designerBtnElement: {
     icon: LuHeading1,
     label: "Title Field",

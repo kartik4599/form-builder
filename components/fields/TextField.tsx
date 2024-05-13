@@ -35,7 +35,7 @@ type CustomInstance = FormElementInstance & {
   };
 };
 
-const designerComponent = ({
+const DesignerComponent = ({
   elmentInstance,
 }: {
   elmentInstance: FormElementInstance;
@@ -68,7 +68,7 @@ const propertiesSchema = z.object({
 
 type propertiesSchemaType = z.infer<typeof propertiesSchema>;
 
-const propertiesComponent = ({
+const PropertiesComponent = ({
   elmentInstance,
 }: {
   elmentInstance: FormElementInstance;
@@ -103,8 +103,7 @@ const propertiesComponent = ({
       <form
         onBlur={form.handleSubmit(applyChanges)}
         onSubmit={(e) => e.preventDefault()}
-        className="space-y-3"
-      >
+        className="space-y-3">
         <FormField
           control={form.control}
           name="label"
@@ -200,7 +199,7 @@ const propertiesComponent = ({
   );
 };
 
-const formComponent = ({
+const FormComponent = ({
   elmentInstance,
   submitValue,
   isInvalid,
@@ -246,8 +245,7 @@ const formComponent = ({
           className={cn(
             "text-muted-foreground text-[0.8rem]",
             error && "text-red-500"
-          )}
-        >
+          )}>
           {helperText}
         </span>
       )}
@@ -257,9 +255,9 @@ const formComponent = ({
 
 export const TextFieldFormElement: FormElement = {
   type,
-  designerComponent,
-  propertiesComponent,
-  formComponent,
+  designerComponent: DesignerComponent,
+  propertiesComponent: PropertiesComponent,
+  formComponent: FormComponent,
   designerBtnElement: {
     icon: MdTextFields,
     label: "Text Field",

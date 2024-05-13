@@ -47,7 +47,7 @@ type CustomInstance = FormElementInstance & {
   };
 };
 
-const designerComponent = ({
+const DesignerComponent = ({
   elmentInstance,
 }: {
   elmentInstance: FormElementInstance;
@@ -85,7 +85,7 @@ const propertiesSchema = z.object({
 
 type propertiesSchemaType = z.infer<typeof propertiesSchema>;
 
-const propertiesComponent = ({
+const PropertiesComponent = ({
   elmentInstance,
 }: {
   elmentInstance: FormElementInstance;
@@ -214,7 +214,7 @@ const propertiesComponent = ({
               <FormMessage />
             </FormItem>
           )}
-        /> 
+        />
         <FormField
           control={form.control}
           name="helperText"
@@ -264,7 +264,7 @@ const propertiesComponent = ({
   );
 };
 
-const formComponent = ({
+const FormComponent = ({
   elmentInstance,
   submitValue,
   isInvalid,
@@ -327,9 +327,9 @@ const formComponent = ({
 
 export const SelectFieldFormElement: FormElement = {
   type,
-  designerComponent,
-  propertiesComponent,
-  formComponent,
+  designerComponent: DesignerComponent,
+  propertiesComponent: PropertiesComponent,
+  formComponent: FormComponent,
   designerBtnElement: {
     icon: RxDropdownMenu,
     label: "Select Field",
