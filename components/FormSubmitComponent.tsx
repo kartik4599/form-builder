@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { useCallback, useRef, useState, useTransition } from "react";
 import { toast } from "./ui/use-toast";
 import { updateFormByUrl } from "@/actions/form";
+import { FaSpinner } from "react-icons/fa";
 
 const FormSubmitComponent = ({
   formContent,
@@ -60,7 +61,7 @@ const FormSubmitComponent = ({
       });
     }
   };
-  
+
   if (submited)
     return (
       <div className="flex justify-center w-full h-full items-center p-8">
@@ -77,8 +78,7 @@ const FormSubmitComponent = ({
     <div className="flex justify-center w-full h-full items-center p-8">
       <div
         key={renderKey}
-        className="max-w-[650px] flex flex-col gap-4 flex-grow bg-background w-full p-8 overflow-y-auto border shadow-xl shadow-blue-700 rounded-xl"
-      >
+        className="max-w-[650px] flex flex-col gap-4 flex-grow bg-background w-full p-8 overflow-y-auto border shadow-xl shadow-blue-700 rounded-xl">
         {formContent.map((element) => {
           const FormElement = FormElements[element.type].formComponent;
           return (
@@ -94,9 +94,12 @@ const FormSubmitComponent = ({
         <Button
           disabled={pending}
           className="mt-8"
-          onClick={() => startTransition(submitForm)}
-        >
-          <HiCursorClick className="mt-2" />
+          onClick={() => startTransition(submitForm)}>
+          {pending ? (
+            <FaSpinner className="h-5 w-5 animate-spin" />
+          ) : (
+            <HiCursorClick className="mt-2" />
+          )}
           Submit
         </Button>
       </div>
